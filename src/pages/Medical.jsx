@@ -7,8 +7,9 @@ import {
     CheckCircle, ExternalLink, Utensils, Calendar, ArrowRightLeft
 } from 'lucide-react';
 import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
+import { fetchWithRetry } from '../utils/gemini';
 
-const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
 
 const Medical = () => {
     const [startLocation, setStartLocation] = useState('');
@@ -44,44 +45,6 @@ const Medical = () => {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
     };
 
-    const fetchWithRetry = async (payload) => {
-        const modelsToTry = ["gemini-1.5-flash"];
-        let lastError = null;
-
-        for (const model of modelsToTry) {
-            const apiVersion = 'v1beta';
-            const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errDetails = await response.json();
-                    throw new Error(errDetails.error?.message || `HTTP ${response.status}`);
-                }
-
-                const result = await response.json();
-                let textContent = result.candidates[0].content.parts[0].text;
-
-                textContent = textContent.replace(/```json/gi, '').replace(/```/g, '').trim();
-                const firstBrace = textContent.indexOf('{');
-                const lastBrace = textContent.lastIndexOf('}');
-
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    textContent = textContent.substring(firstBrace, lastBrace + 1);
-                }
-
-                return JSON.parse(textContent);
-            } catch (e) {
-                lastError = e;
-            }
-        }
-        throw lastError || new Error("All available Google AI models failed to respond.");
-    };
 
     const generateMedicalPlan = async () => {
         const age = calculateAgeFromDate(birthDate);
@@ -136,10 +99,14 @@ const Medical = () => {
 
         try {
             const data = await fetchWithRetry({ contents: [{ parts: [{ text: prompt }] }] });
-            setResults(data);
-            setTimeout(() => {
-                document.getElementById('results-area')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            if (data && data.quotaExceeded) {
+                setError("API quota exceeded. Please try again later or upgrade your plan.");
+            } else {
+                setResults(data);
+                setTimeout(() => {
+                    document.getElementById('results-area')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
         } catch (err) {
             setError("API Error: " + err.message);
         } finally {

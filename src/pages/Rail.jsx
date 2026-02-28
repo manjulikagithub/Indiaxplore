@@ -5,8 +5,9 @@ import {
     ArrowRight, Train, Lock, TrainFront, CheckCircle, Calendar
 } from 'lucide-react';
 import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
+import { fetchWithRetry } from '../utils/gemini';
 
-const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
 
 const Rail = () => {
     const [step, setStep] = useState('search'); // 'search', 'loading', 'results', 'checkout', 'processing', 'success'
@@ -25,44 +26,6 @@ const Rail = () => {
         setDate(tomorrow.toISOString().split('T')[0]);
     }, []);
 
-    const fetchWithRetry = async (payload) => {
-        const modelsToTry = ["gemini-1.5-flash"];
-        let lastError = null;
-
-        for (const model of modelsToTry) {
-            const apiVersion = 'v1beta';
-            const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errDetails = await response.json();
-                    throw new Error(errDetails.error?.message || `HTTP ${response.status}`);
-                }
-
-                const result = await response.json();
-                let textContent = result.candidates[0].content.parts[0].text;
-
-                textContent = textContent.replace(/```json/gi, '').replace(/```/g, '').trim();
-                const firstBrace = textContent.indexOf('{');
-                const lastBrace = textContent.lastIndexOf('}');
-
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    textContent = textContent.substring(firstBrace, lastBrace + 1);
-                }
-
-                return JSON.parse(textContent);
-            } catch (e) {
-                lastError = e;
-            }
-        }
-        throw lastError || new Error("All available Google AI models failed to respond.");
-    };
 
     const handleSearch = async () => {
         // Age check - optional for rail (minors can travel with guardian)
@@ -106,8 +69,13 @@ const Rail = () => {
 
         try {
             const data = await fetchWithRetry({ contents: [{ parts: [{ text: prompt }] }] });
-            setTrains(data.trains || []);
-            setStep('results');
+            if (data && data.quotaExceeded) {
+                setError("Quota exceeded. Please try again later or upgrade your API plan.");
+                setStep('search');
+            } else {
+                setTrains(data.trains || []);
+                setStep('results');
+            }
         } catch (err) {
             setError("Unable to fetch trains. Please try different stations. " + err.message);
             setStep('search');

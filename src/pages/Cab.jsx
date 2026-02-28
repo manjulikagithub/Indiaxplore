@@ -5,9 +5,10 @@ import {
     ArrowRightLeft, Car, CheckCircle, Truck, Bike, User,
     Star, Phone, Calendar
 } from 'lucide-react';
-import { getMaxBirthDate } from '../utils/ageValidator';
+import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
+import { fetchWithRetry } from '../utils/gemini';
 
-const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
 
 const Cab = () => {
     const [step, setStep] = useState('search'); // 'search', 'loading', 'results', 'checkout', 'success', 'roast'
@@ -22,49 +23,11 @@ const Cab = () => {
     const [roastMessage, setRoastMessage] = useState('');
     const [confData, setConfData] = useState(null);
 
-    const fetchWithRetry = async (payload) => {
-        const modelsToTry = ["gemini-1.5-flash"];
-        let lastError = null;
-
-        for (const model of modelsToTry) {
-            const apiVersion = 'v1beta';
-            const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errDetails = await response.json();
-                    throw new Error(errDetails.error?.message || `HTTP ${response.status}`);
-                }
-
-                const result = await response.json();
-                let textContent = result.candidates[0].content.parts[0].text;
-
-                textContent = textContent.replace(/```json/gi, '').replace(/```/g, '').trim();
-                const firstBrace = textContent.indexOf('{');
-                const lastBrace = textContent.lastIndexOf('}');
-
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    textContent = textContent.substring(firstBrace, lastBrace + 1);
-                }
-
-                return JSON.parse(textContent);
-            } catch (e) {
-                lastError = e;
-            }
-        }
-        throw lastError || new Error("All available Google AI models failed to respond.");
-    };
 
     const handleSearch = async () => {
         // Age check - optional for cabs (minors can use cab services with guardians)
         if (birthDate) {
-            const age = require('../utils/ageValidator').calculateAgeFromDate(birthDate);
+            const age = calculateAgeFromDate(birthDate);
             if (age < 0) {
                 setAgeError("Invalid date of birth provided.");
                 return;
@@ -110,8 +73,10 @@ const Cab = () => {
 
         try {
             const data = await fetchWithRetry({ contents: [{ parts: [{ text: prompt }] }] });
-
-            if (data.is_local_ride === false) {
+            if (data && data.quotaExceeded) {
+                setError("Quota exceeded. Please try again later or upgrade your API plan.");
+                setStep('search');
+            } else if (data.is_local_ride === false) {
                 setRoastMessage(data.roast_message);
                 setStep('roast');
             } else {
