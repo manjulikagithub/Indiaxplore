@@ -24,7 +24,7 @@ const Flight = () => {
     }, []);
 
     const fetchWithRetry = async (payload) => {
-        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-pro"];
+        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro"];
         let lastError = null;
 
         for (const model of modelsToTry) {
