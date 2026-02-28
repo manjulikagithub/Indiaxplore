@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
     ArrowLeft, MapPin, ArrowRightLeft, Search, AlertCircle,
-    ArrowRight, Train, Lock, TrainFront, CheckCircle
+    ArrowRight, Train, Lock, TrainFront, CheckCircle, Calendar
 } from 'lucide-react';
+import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -275,7 +276,7 @@ const Rail = () => {
 
                                     <div className="flex flex-row md:flex-col items-center justify-between w-full md:w-1/4 border-t md:border-t-0 md:border-l border-slate-700/50 pt-4 md:pt-0 md:pl-6">
                                         <div className="text-left md:text-center md:mb-3 flex flex-col items-start md:items-center">
-                                            <span className="block font-bold text-white text-2xl text-orange-400">{formatPrice(t.price)}</span>
+                                            <span className="block font-bold text-orange-400 text-2xl">{formatPrice(t.price)}</span>
                                             <div className="flex items-center gap-2 mt-0.5">
                                                 <span className="text-[10px] text-slate-500 uppercase">Class:</span>
                                                 <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-1.5 rounded">{t.class_type}</span>

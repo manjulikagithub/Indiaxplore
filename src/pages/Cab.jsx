@@ -71,7 +71,8 @@ const Cab = () => {
             }
         }
         
-        setAgeError('');\n        if (!pickup.trim() || !dropoff.trim()) {
+        setAgeError('');
+        if (!pickup.trim() || !dropoff.trim()) {
             setError("Please enter both pickup and drop-off locations.");
             return;
         }

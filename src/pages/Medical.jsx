@@ -4,7 +4,7 @@ import {
     ArrowLeft, HeartPulse, MapPin, Navigation, IndianRupee,
     Building2, Stethoscope, Activity, AlertCircle,
     ClipboardList, ShieldAlert, Receipt, Plane, Hotel, ShieldCheck,
-    CheckCircle, ExternalLink, Utensils, Calendar
+    CheckCircle, ExternalLink, Utensils, Calendar, ArrowRightLeft
 } from 'lucide-react';
 import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
 
@@ -218,7 +218,7 @@ const Medical = () => {
                         </div>
 
                         <div className="relative w-full">
-                            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 text-rose-300">Preferred Hospital (Optional)</label>
+                            <label className="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-2">Preferred Hospital (Optional)</label>
                             <div className="absolute bottom-0 left-0 pl-4 pb-4 flex items-center pointer-events-none">
                                 <Building2 className="w-5 h-5 text-slate-500" />
                             </div>
@@ -227,7 +227,7 @@ const Medical = () => {
                         </div>
 
                         <div className="relative w-full">
-                            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 text-rose-300">Treatment or Condition Required</label>
+                            <label className="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-2">Treatment or Condition Required</label>
                             <div className="absolute bottom-0 left-0 pl-4 pb-4 flex items-center pointer-events-none">
                                 <Stethoscope className="w-5 h-5 text-slate-500" />
                             </div>
@@ -236,7 +236,7 @@ const Medical = () => {
                         </div>
 
                         <div className="relative w-full">
-                            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 text-rose-500">Date of Birth (Required)</label>
+                            <label className="block text-xs font-semibold text-rose-500 uppercase tracking-wider mb-2">Date of Birth (Required)</label>
                             <div className="absolute bottom-0 left-0 pl-4 pb-4 flex items-center pointer-events-none">
                                 <Calendar className="w-5 h-5 text-rose-500" />
                             </div>
@@ -339,7 +339,7 @@ const Medical = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-white/5 backdrop-blur-md rounded-[32px] p-8 border border-rose-500/30 relative overflow-hidden h-fit sticky top-32 shadow-2xl">
+                                <div className="bg-white/5 backdrop-blur-md rounded-[32px] p-8 border border-rose-500/30 overflow-hidden h-fit sticky top-32 shadow-2xl">
                                     <div className="absolute top-0 right-0 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
                                     <h3 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white"><Receipt className="text-rose-400" /> Estimate</h3>

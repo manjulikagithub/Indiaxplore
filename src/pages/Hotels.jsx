@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
     ArrowLeft, MapPin, Search, AlertCircle,
-    Building, Moon, Lock, CheckCircle, Star
+    Building, Moon, Lock, CheckCircle, Star, Calendar
 } from 'lucide-react';
+import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 

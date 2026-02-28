@@ -172,7 +172,7 @@ const Flight = () => {
                             <p className="text-slate-300 max-w-2xl mx-auto">Compare domestic and international flights. Real-time AI scanning to find the best routes and prices for your journey.</p>
                         </div>
 
-                        <div className="bg-white/5 backdrop-blur-md rounded-[32px] p-6 md:p-10 border border border-white/10 border-t-blue-500/30 shadow-2xl relative overflow-hidden">
+                        <div className="bg-white/5 backdrop-blur-md rounded-[32px] p-6 md:p-10 border border-white/10 border-t-blue-500/30 shadow-2xl relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
                             <div className="flex flex-col md:flex-row gap-4 items-end relative z-10">

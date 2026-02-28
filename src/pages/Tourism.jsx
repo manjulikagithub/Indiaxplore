@@ -225,7 +225,7 @@ const Tourism = () => {
                         </div>
 
                         <div className="relative w-full">
-                            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 text-emerald-400">Date of Birth (Required)</label>
+                            <label className="block text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2">Date of Birth (Required)</label>
                             <div className="absolute bottom-0 left-0 pl-4 pb-4 flex items-center pointer-events-none">
                                 <Calendar className="w-5 h-5 text-emerald-500" />
                             </div>
@@ -330,7 +330,7 @@ const Tourism = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-white/5 backdrop-blur-md rounded-[32px] p-8 border border-emerald-500/30 relative overflow-hidden h-fit sticky top-32">
+                            <div className="bg-white/5 backdrop-blur-md rounded-[32px] p-8 border border-emerald-500/30 overflow-hidden h-fit sticky top-32">
                                 <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
                                 <h3 className="text-2xl font-bold mb-6 flex items-center gap-2"><Receipt className="text-emerald-400" /> Estimate</h3>
