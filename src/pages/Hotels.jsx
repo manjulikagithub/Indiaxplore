@@ -53,7 +53,7 @@ const Hotels = () => {
     };
 
     const fetchWithRetry = async (payload) => {
-        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b"];
+        const modelsToTry = ["gemini-1.5-flash"];
         let lastError = null;
 
         for (const model of modelsToTry) {
