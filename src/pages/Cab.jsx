@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import {
     ArrowLeft, MapPin, Search, AlertCircle, TrainFront,
     ArrowRightLeft, Car, CheckCircle, Truck, Bike, User,
-    Star, Phone
+    Star, Phone, Calendar
 } from 'lucide-react';
+import { getMaxBirthDate } from '../utils/ageValidator';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -12,10 +13,12 @@ const Cab = () => {
     const [step, setStep] = useState('search'); // 'search', 'loading', 'results', 'checkout', 'success', 'roast'
     const [pickup, setPickup] = useState('');
     const [dropoff, setDropoff] = useState('');
+    const [birthDate, setBirthDate] = useState('');
 
     const [cabs, setCabs] = useState([]);
     const [selectedCab, setSelectedCab] = useState(null);
     const [error, setError] = useState('');
+    const [ageError, setAgeError] = useState('');
     const [roastMessage, setRoastMessage] = useState('');
     const [confData, setConfData] = useState(null);
 
@@ -59,7 +62,16 @@ const Cab = () => {
     };
 
     const handleSearch = async () => {
-        if (!pickup.trim() || !dropoff.trim()) {
+        // Age check - optional for cabs (minors can use cab services with guardians)
+        if (birthDate) {
+            const age = require('../utils/ageValidator').calculateAgeFromDate(birthDate);
+            if (age < 0) {
+                setAgeError("Invalid date of birth provided.");
+                return;
+            }
+        }
+        
+        setAgeError('');\n        if (!pickup.trim() || !dropoff.trim()) {
             setError("Please enter both pickup and drop-off locations.");
             return;
         }
@@ -197,6 +209,19 @@ const Cab = () => {
                                             </div>
                                             <input type="text" value={dropoff} onChange={e => setDropoff(e.target.value)} placeholder="e.g. Howrah Station, Kolkata"
                                                 className="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-yellow-500 transition-colors" />
+                                        </div>
+                                    </div>
+
+                                    <div className="relative">
+                                        <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full bg-blue-500 border-4 border-slate-900 z-10 hidden md:block"></div>
+                                        <label className="block text-xs font-semibold text-yellow-400 uppercase tracking-wider mb-2">Date of Birth (Optional)</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <Calendar className="w-5 h-5 text-blue-500" />
+                                            </div>
+                                            <input type="date" value={birthDate} max={getMaxBirthDate()} onChange={e => { setBirthDate(e.target.value); setAgeError(''); }} style={{ colorScheme: 'dark' }}
+                                                className={`w-full bg-slate-900/50 border ${ageError ? 'border-red-500/50' : 'border-slate-700'} text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-yellow-500 transition-colors`} />
+                                            {ageError && <p className="text-red-400 text-xs mt-2 font-medium">{ageError}</p>}
                                         </div>
                                     </div>
                                 </div>

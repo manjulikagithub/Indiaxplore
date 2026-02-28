@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, ArrowRightLeft, Search, AlertCircle, Plane, ArrowRight, Lock, CheckCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, ArrowRightLeft, Search, AlertCircle, Plane, ArrowRight, Lock, CheckCircle, Calendar } from 'lucide-react';
+import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const Flight = () => {
-    const [step, setStep] = useState('search'); // 'search', 'loading', 'results', 'checkout', 'processing', 'success'
+    const [step, setStep] = useState('search');
     const [origin, setOrigin] = useState('');
     const [destination, setDestination] = useState('');
     const [flightDate, setFlightDate] = useState('');
+    const [birthDate, setBirthDate] = useState('');
     const [flights, setFlights] = useState([]);
     const [selectedFlight, setSelectedFlight] = useState(null);
     const [error, setError] = useState('');
+    const [ageError, setAgeError] = useState('');
     const [pnr, setPnr] = useState('');
 
     useEffect(() => {
@@ -60,6 +63,14 @@ const Flight = () => {
     };
 
     const handleFlightSearch = async () => {
+        // Age check - optional for flights (minors can fly with guardian)
+        if (birthDate && !isAgeValid(calculateAgeFromDate(birthDate), 0)) {
+            setAgeError("Invalid age information.");
+            return;
+        }
+        
+        setAgeError('');
+        
         if (!origin.trim() || !destination.trim()) {
             setError("Please enter both Origin and Destination airports/cities.");
             return;
@@ -191,6 +202,13 @@ const Flight = () => {
                                     <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Departure</label>
                                     <input type="date" value={flightDate} onChange={e => setFlightDate(e.target.value)} style={{ colorScheme: 'dark' }}
                                         className="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-4 focus:outline-none focus:border-blue-500 transition-colors" />
+                                </div>
+
+                                <div className="w-full md:w-64 relative shrink-0">
+                                    <label className="block text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Birth Date</label>
+                                    <input type="date" value={birthDate} max={getMaxBirthDate()} onChange={e => { setBirthDate(e.target.value); setAgeError(''); }} style={{ colorScheme: 'dark' }}
+                                        className={`w-full bg-slate-900/50 border ${ageError ? 'border-red-500/50' : 'border-slate-700'} text-white rounded-xl px-4 py-4 focus:outline-none focus:border-blue-500 transition-colors`} />
+                                    {ageError && <p className="text-red-400 text-xs mt-2 font-medium">{ageError}</p>}
                                 </div>
                             </div>
 

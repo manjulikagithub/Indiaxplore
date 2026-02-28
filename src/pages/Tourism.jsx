@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import {
     ArrowLeft, MapPin, Navigation, IndianRupee, Sparkles,
     AlertCircle, Camera, Map, Info, Receipt, Plane, Hotel,
-    Utensils, ShieldCheck, CreditCard, ExternalLink, Flame
+    Utensils, ShieldCheck, CreditCard, ExternalLink, Flame, Calendar
 } from 'lucide-react';
+import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -14,10 +15,11 @@ const Tourism = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [budget, setBudget] = useState('');
-
-    const [step, setStep] = useState('input'); // 'input', 'loading', 'results', 'roast'
+    const [birthDate, setBirthDate] = useState('');
+    const [step, setStep] = useState('input');
     const [results, setResults] = useState(null);
     const [error, setError] = useState('');
+    const [ageError, setAgeError] = useState('');
 
     useEffect(() => {
         const today = new Date();
@@ -220,6 +222,16 @@ const Tourism = () => {
                             </div>
                             <input type="number" value={budget} onChange={e => setBudget(e.target.value)} placeholder="e.g. 50000" min="1"
                                 className="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-emerald-500 transition-colors placeholder-slate-500" />
+                        </div>
+
+                        <div className="relative w-full">
+                            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 text-emerald-400">Date of Birth (Required)</label>
+                            <div className="absolute bottom-0 left-0 pl-4 pb-4 flex items-center pointer-events-none">
+                                <Calendar className="w-5 h-5 text-emerald-500" />
+                            </div>
+                            <input type="date" value={birthDate} max={getMaxBirthDate()} onChange={e => { setBirthDate(e.target.value); setAgeError(''); }} style={{ colorScheme: 'dark' }}
+                                className={`w-full bg-slate-900/50 border ${ageError ? 'border-red-500/50' : 'border-slate-700'} text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-emerald-500 transition-colors`} />
+                            {ageError && <p className="text-red-400 text-xs mt-2 font-medium">{ageError}</p>}
                         </div>
                     </div>
 

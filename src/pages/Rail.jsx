@@ -64,6 +64,14 @@ const Rail = () => {
     };
 
     const handleSearch = async () => {
+        // Age check - optional for rail (minors can travel with guardian)
+        if (birthDate && !isAgeValid(calculateAgeFromDate(birthDate), 0)) {
+            setAgeError("Invalid age information.");
+            return;
+        }
+        
+        setAgeError('');
+        
         if (!origin.trim() || !destination.trim()) {
             setError("Please enter both Origin and Destination stations/cities.");
             return;
@@ -184,6 +192,13 @@ const Rail = () => {
                                     <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Journey Date</label>
                                     <input type="date" value={date} onChange={e => setDate(e.target.value)} style={{ colorScheme: 'dark' }}
                                         className="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-4 focus:outline-none focus:border-orange-500 transition-colors" />
+                                </div>
+
+                                <div className="w-full md:w-64 relative shrink-0">
+                                    <label className="block text-xs font-semibold text-orange-400 uppercase tracking-wider mb-2">Birth Date</label>
+                                    <input type="date" value={birthDate} max={getMaxBirthDate()} onChange={e => { setBirthDate(e.target.value); setAgeError(''); }} style={{ colorScheme: 'dark' }}
+                                        className={`w-full bg-slate-900/50 border ${ageError ? 'border-red-500/50' : 'border-slate-700'} text-white rounded-xl px-4 py-4 focus:outline-none focus:border-orange-500 transition-colors`} />
+                                    {ageError && <p className="text-red-400 text-xs mt-2 font-medium">{ageError}</p>}
                                 </div>
                             </div>
 

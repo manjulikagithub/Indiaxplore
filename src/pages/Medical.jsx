@@ -4,8 +4,9 @@ import {
     ArrowLeft, HeartPulse, MapPin, Navigation, IndianRupee,
     Building2, Stethoscope, Activity, AlertCircle,
     ClipboardList, ShieldAlert, Receipt, Plane, Hotel, ShieldCheck,
-    CheckCircle, ExternalLink, Utensils
+    CheckCircle, ExternalLink, Utensils, Calendar
 } from 'lucide-react';
+import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -17,9 +18,11 @@ const Medical = () => {
     const [budget, setBudget] = useState('');
     const [hospital, setHospital] = useState('');
     const [treatment, setTreatment] = useState('');
+    const [birthDate, setBirthDate] = useState('');
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [ageError, setAgeError] = useState('');
     const [results, setResults] = useState(null);
 
     useEffect(() => {
@@ -81,6 +84,15 @@ const Medical = () => {
     };
 
     const generateMedicalPlan = async () => {
+        const age = calculateAgeFromDate(birthDate);
+        
+        if (!birthDate || !isAgeValid(age, 18)) {
+            setAgeError(getAgeValidationMessage(age, 18));
+            return;
+        }
+        
+        setAgeError('');
+        
         if (!startLocation.trim() || !destination.trim() || !budget || !treatment.trim()) {
             setError("Please fill in your Origin, Destination, Budget, and Treatment required.");
             return;
@@ -221,6 +233,16 @@ const Medical = () => {
                             </div>
                             <input type="text" value={treatment} onChange={e => setTreatment(e.target.value)} placeholder="e.g. Cardiology, Dental"
                                 className="w-full bg-slate-900/50 border border-rose-500/30 text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-rose-500 transition-colors placeholder-slate-500" />
+                        </div>
+
+                        <div className="relative w-full">
+                            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 text-rose-500">Date of Birth (Required)</label>
+                            <div className="absolute bottom-0 left-0 pl-4 pb-4 flex items-center pointer-events-none">
+                                <Calendar className="w-5 h-5 text-rose-500" />
+                            </div>
+                            <input type="date" value={birthDate} max={getMaxBirthDate()} onChange={e => { setBirthDate(e.target.value); setAgeError(''); }} style={{ colorScheme: 'dark' }}
+                                className={`w-full bg-slate-900/50 border ${ageError ? 'border-red-500/50' : 'border-slate-700'} text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-rose-500 transition-colors placeholder-slate-500`} />
+                            {ageError && <p className="text-red-400 text-xs mt-2 font-medium">{ageError}</p>}
                         </div>
                     </div>
 

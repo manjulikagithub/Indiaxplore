@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     ArrowLeft, MapPin, Search, AlertCircle,
-    Stethoscope, Activity, Building2, Lock, CheckCircle, IndianRupee
+    Stethoscope, Activity, Building2, Lock, CheckCircle, IndianRupee, Calendar
 } from 'lucide-react';
+import { calculateAgeFromDate, isAgeValid, getAgeValidationMessage, getMaxBirthDate } from '../utils/ageValidator';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -12,10 +13,12 @@ const Hospital = () => {
     const [city, setCity] = useState('');
     const [treatment, setTreatment] = useState('');
     const [hospitalPref, setHospitalPref] = useState('');
+    const [birthDate, setBirthDate] = useState('');
 
     const [recommendations, setRecommendations] = useState([]);
     const [selectedHospital, setSelectedHospital] = useState(null);
     const [error, setError] = useState('');
+    const [ageError, setAgeError] = useState('');
 
     const fetchWithRetry = async (payload) => {
         const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-pro"];
@@ -174,6 +177,18 @@ const Hospital = () => {
                                         </div>
                                         <input type="text" value={hospitalPref} onChange={e => setHospitalPref(e.target.value)} placeholder="If blank, we will recommend the best options"
                                             className="w-full bg-slate-900/50 border border-rose-500/30 text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-rose-500 transition-colors" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-rose-500 uppercase tracking-wider mb-2">Date of Birth (Required)</label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <Calendar className="w-5 h-5 text-rose-500" />
+                                        </div>
+                                        <input type="date" value={birthDate} max={getMaxBirthDate()} onChange={e => { setBirthDate(e.target.value); setAgeError(''); }} style={{ colorScheme: 'dark' }}
+                                            className={`w-full bg-slate-900/50 border ${ageError ? 'border-red-500/50' : 'border-slate-700'} text-white rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:border-rose-500 transition-colors`} />
+                                        {ageError && <p className="text-red-400 text-xs mt-2 font-medium">{ageError}</p>}
                                     </div>
                                 </div>
 
