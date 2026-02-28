@@ -6,7 +6,7 @@ import {
     Plane, Hotel as HotelIcon, Utensils, ShieldCheck, CreditCard
 } from 'lucide-react';
 
-const apiKey = "AIzaSyBYMyDqUZe_hKSc2KTS80IacTJ5caloadk";
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const Agra = () => {
     const [startLocation, setStartLocation] = useState('');

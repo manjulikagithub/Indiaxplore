@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, ArrowRightLeft, Search, AlertCircle, Plane, ArrowRight, Lock, CheckCircle } from 'lucide-react';
 
-const apiKey = "AIzaSyBYMyDqUZe_hKSc2KTS80IacTJ5caloadk";
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const Flight = () => {
     const [step, setStep] = useState('search'); // 'search', 'loading', 'results', 'checkout', 'processing', 'success'

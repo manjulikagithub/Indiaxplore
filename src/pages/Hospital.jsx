@@ -5,7 +5,7 @@ import {
     Stethoscope, Activity, Building2, Lock, CheckCircle, IndianRupee
 } from 'lucide-react';
 
-const apiKey = "AIzaSyBYMyDqUZe_hKSc2KTS80IacTJ5caloadk";
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const Hospital = () => {
     const [step, setStep] = useState('search'); // 'search', 'loading', 'recommendations', 'checkout', 'success'

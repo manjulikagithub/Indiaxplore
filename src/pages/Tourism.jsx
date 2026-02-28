@@ -6,7 +6,7 @@ import {
     Utensils, ShieldCheck, CreditCard, ExternalLink, Flame
 } from 'lucide-react';
 
-const apiKey = "AIzaSyBYMyDqUZe_hKSc2KTS80IacTJ5caloadk";
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const Tourism = () => {
     const [startLocation, setStartLocation] = useState('');
