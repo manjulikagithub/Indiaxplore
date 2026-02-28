@@ -1,0 +1,20 @@
+{
+  "itinerary": {
+    "is_budget_realistic": true,
+    "roast_message": "",
+    "itinerary": [
+      { "day": "Day 1", "activities": "Arrive and explore local market", "dining": "Street food stalls" }
+    ],
+    "highlights": [
+      { "name": "Local Temple", "description": "A beautiful historic temple." }
+    ],
+    "communication_tips": "Use local bus routes for cheap travel.",
+    "costs": { "transport": 500, "hotel": 1500, "food": 300 }
+  },
+  "flights": [
+    { "airline": "Air India", "departure": "10:00", "arrival": "12:00", "price": 4500 }
+  ],
+  "hotels": [
+    { "hotel_name": "Mock Hotel", "stars": 3, "price_per_night": 2500 }
+  ]
+}
